@@ -86,17 +86,24 @@ class Util {
       conf['full_name'] = user.getFullName()
     }
 
-    def emailProperty = user.getProperty(hudson.tasks.Mailer.UserProperty)
-    if (emailProperty != null) {
-      def email_address = emailProperty.getAddress()
-      if (email_address != null) {
-        conf['email_address'] = emailProperty.getAddress()
+    def j = Jenkins.getInstance()
+
+    // these properties are provided by plugins that may not be installed
+    if (j.getPlugin('mailer')) {
+      def emailProperty = user.getProperty(hudson.tasks.Mailer.UserProperty)
+      if (emailProperty != null) {
+        def email_address = emailProperty.getAddress()
+        if (email_address != null) {
+          conf['email_address'] = emailProperty.getAddress()
+        }
       }
     }
 
-    def keysProperty = user.getProperty(org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl)
-    if(keysProperty != null) {
-      conf['public_keys'] = keysProperty.authorizedKeys.split('\\n')
+    if (j.getPlugin('sshd')) {
+      def keysProperty = user.getProperty(org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl)
+      if(keysProperty != null) {
+        conf['public_keys'] = keysProperty.authorizedKeys.split('\\n')
+      }
     }
 
     def tokenProperty = user.getProperty(jenkins.security.ApiTokenProperty)
