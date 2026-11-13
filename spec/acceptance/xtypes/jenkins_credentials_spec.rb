@@ -387,7 +387,7 @@ describe 'jenkins_credentials' do
             description => 'browserstack credentials',
             impl        => 'BrowserStackCredentials',
             username    => 'whats this?',
-            secret_key  => 'you know I payed for this',
+            access_key  => 'you know I payed for this',
           }
         EOS
 
@@ -396,7 +396,6 @@ describe 'jenkins_credentials' do
         end
 
         it 'works idempotently' do
-          pending('secret key is not idempotent')
           apply(pp, catch_changes: true)
         end
 

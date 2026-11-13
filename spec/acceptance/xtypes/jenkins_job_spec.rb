@@ -183,8 +183,7 @@ describe 'jenkins_job', order: :defined do
       end
     end
 
-    # 'CLI update-job command is unable to handle the conversion'
-    context 'convert existing job to folder', if: false do
+    context 'convert existing job to folder', skip: 'the CLI update-job command cannot change the type of an existing job' do
       describe 'setup' do
         include_examples 'an idempotent resource' do
           let(:manifest) do
