@@ -59,7 +59,7 @@ describe 'jenkins_job', order: :defined do
 
   context 'ensure =>' do
     context 'present' do
-      it 'works with no errors' do
+      it 'works with no errors and idempotently' do
         pp = <<-EOS
           include jenkins
           include jenkins::cli::config
@@ -69,8 +69,8 @@ describe 'jenkins_job', order: :defined do
           }
         EOS
 
-        # XXX idempotency is broken
         apply(pp, catch_failures: true)
+        apply(pp, catch_changes: true)
       end
 
       describe file('/var/lib/jenkins/jobs/foo/config.xml') do
@@ -115,7 +115,7 @@ describe 'jenkins_job', order: :defined do
 
     context 'nested folders' do
       context 'create' do
-        it 'works with no errors' do
+        it 'works with no errors and idempotently' do
           pp = <<-EOS
             #{manifest}
             jenkins_job { 'foo':
@@ -134,8 +134,8 @@ describe 'jenkins_job', order: :defined do
             }
           EOS
 
-          # XXX idempotency is broken
           apply(pp, catch_failures: true)
+          apply(pp, catch_changes: true)
         end
 
         %w[

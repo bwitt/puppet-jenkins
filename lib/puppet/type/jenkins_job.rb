@@ -25,6 +25,17 @@ Puppet::X::Jenkins::Type::Cli.newtype(:jenkins_job) do
 
     desc 'XML job configuration string'
 
+    # jenkins rewrites the XML declaration and drops the trailing newline
+    def self.normalize(xml)
+      return xml unless xml.is_a?(String)
+
+      xml.sub(%r{\A\s*<\?xml[^>]*\?>\s*}, '').rstrip
+    end
+
+    def insync?(is)
+      self.class.normalize(is) == self.class.normalize(should)
+    end
+
     def change_to_s(currentvalue, newvalue)
       if currentvalue == :absent
         'created'

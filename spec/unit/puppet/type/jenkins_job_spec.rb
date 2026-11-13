@@ -57,6 +57,22 @@ describe Puppet::Type.type(:jenkins_job) do
         end
       end
 
+      describe 'insync?' do
+        let(:resource) { described_class.new(name: 'foo', config: "<?xml version='1.1' encoding='UTF-8'?>\n<project/>\n") }
+
+        it 'ignores the xml declaration and trailing whitespace' do
+          expect(property).to be_insync('<?xml version="1.1" encoding="UTF-8"?><project/>')
+        end
+
+        it 'detects changes' do
+          expect(property).not_to be_insync('<project><foo/></project>')
+        end
+
+        it 'is not insync when absent' do
+          expect(property).not_to be_insync(:absent)
+        end
+      end
+
       describe 'change_to_s change string' do
         context 'created' do
           it { expect(property.change_to_s(:absent, nil)).to eq 'created' }
