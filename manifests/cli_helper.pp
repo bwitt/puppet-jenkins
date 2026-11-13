@@ -29,7 +29,7 @@ class jenkins::cli_helper {
       '|',
       '/usr/bin/java',
       "-jar ${cli_jar}",
-      '-http',
+      $jenkins::_cli_mode_arg,
       "-s ${urlbase}:${port}${prefix}",
       $jenkins::_cli_auth_arg,
       'groovy =',

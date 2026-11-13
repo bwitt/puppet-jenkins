@@ -329,7 +329,14 @@ class jenkins (
     warning('jenkins::purge_plugins has no effect unless jenkins::manage_datadirs is true')
   }
 
-  # Construct the cli auth argument used in cli and cli_helper
+  # Construct the cli connection mode and auth arguments used in cli and cli_helper
+  # -http and -ssh are mutually exclusive
+  if $cli_ssh_keyfile {
+    $_cli_mode_arg = undef
+  } else {
+    $_cli_mode_arg = '-http'
+  }
+
   if $cli_ssh_keyfile {
     # SSH key auth
     if empty($cli_username) {

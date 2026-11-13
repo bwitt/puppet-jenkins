@@ -446,7 +446,7 @@ describe Puppet::X::Jenkins::Provider::Cli do
             ).and_raise(AuthError, error)
 
             expect(described_class.superclass).to receive(:execute).with(
-              'java -jar /usr/share/java/jenkins-cli.jar -http -s http://localhost:8080 -logger WARNING -i cat.id_rsa -ssh -user myuser foo',
+              'java -jar /usr/share/java/jenkins-cli.jar -s http://localhost:8080 -logger WARNING -i cat.id_rsa -ssh -user myuser foo',
               failonfail: true, combine: true,
             )
 
@@ -459,7 +459,7 @@ describe Puppet::X::Jenkins::Provider::Cli do
             )
 
             expect(described_class.superclass).to receive(:execute).with(
-              'java -jar /usr/share/java/jenkins-cli.jar -http -s http://localhost:8080 -logger WARNING -i cat.id_rsa -ssh -user myuser foo',
+              'java -jar /usr/share/java/jenkins-cli.jar -s http://localhost:8080 -logger WARNING -i cat.id_rsa -ssh -user myuser foo',
               failonfail: true, combine: true,
             )
 

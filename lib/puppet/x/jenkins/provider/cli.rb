@@ -175,15 +175,17 @@ class Puppet::X::Jenkins::Provider::Cli < Puppet::Provider
     cli_password_file        = config[:cli_password_file]
     cli_password_file_exists = config[:cli_password_file_exists]
 
-    base_cmd = cli_pre_cmd + [
+    java_cmd = cli_pre_cmd + [
       command(:java),
       '-jar', cli_jar,
-      '-http',
+    ]
+    conn_opts = [
       '-s', url,
       '-logger', 'WARNING',
     ]
 
-    cli_cmd = base_cmd + [command]
+    # -http and -ssh are mutually exclusive connection modes
+    cli_cmd = java_cmd + ['-http'] + conn_opts + [command]
     cli_cmd.flatten!
 
     auth_cmd = nil
@@ -191,11 +193,11 @@ class Puppet::X::Jenkins::Provider::Cli < Puppet::Provider
     if !ssh_private_key.nil?
       raise 'cli_username must be set' if cli_username.nil? || cli_username.empty?
 
-      auth_cmd = base_cmd + ['-i', ssh_private_key] + ['-ssh', '-user', cli_username] + [command]
+      auth_cmd = java_cmd + conn_opts + ['-i', ssh_private_key] + ['-ssh', '-user', cli_username] + [command]
     # either we have a prepared username:password file, just use it
     # or we have username and password, then we create the password file and use it
     elsif cli_password_file_exists || (!cli_username.nil? && !cli_password.nil?)
-      auth_cmd = base_cmd + ['-auth', "@#{cli_password_file}"] + [command]
+      auth_cmd = java_cmd + ['-http'] + conn_opts + ['-auth', "@#{cli_password_file}"] + [command]
     end
     auth_cmd&.flatten!
 

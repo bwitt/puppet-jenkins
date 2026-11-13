@@ -57,7 +57,7 @@ class jenkins::cli {
     delete_undef_values([
       'java',
       "-jar ${jar}",
-      '-http',
+      $jenkins::_cli_mode_arg,
       "-s ${urlbase}:${port}${prefix}",
       $jenkins::_cli_auth_arg,
     ]),
