@@ -242,7 +242,7 @@ class Actions {
 
     if ( public_keys != "" ) {
       util.requirePlugin('sshd')
-      def keys_param = this.class.classLoader.loadClass('org.jenkinsci.main.modules.cli.auth.ssh$UserPropertyImpl').newInstance(public_keys)
+      def keys_param = this.class.classLoader.loadClass('org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl').newInstance(public_keys)
       user.addProperty(keys_param)
     }
 
@@ -299,7 +299,7 @@ class Actions {
       assert public_keys instanceof List
       // convert list of keys into a single string
       def keys = public_keys.join("\n")
-      def keys_param = this.class.classLoader.loadClass('org.jenkinsci.main.modules.cli.auth.ssh$UserPropertyImpl').newInstance(keys)
+      def keys_param = this.class.classLoader.loadClass('org.jenkinsci.main.modules.cli.auth.ssh.UserPropertyImpl').newInstance(keys)
       user.addProperty(keys_param)
     }
 
