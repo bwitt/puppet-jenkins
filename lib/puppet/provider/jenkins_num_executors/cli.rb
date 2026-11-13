@@ -12,7 +12,7 @@ Puppet::Type.type(:jenkins_num_executors).provide(:cli, parent: Puppet::X::Jenki
     # there can be only one value
     Puppet.debug("#{sname} instances: #{n}")
 
-    [new(name: n, ensure: :prsent)]
+    [new(name: n, ensure: :present)]
   end
 
   def flush

@@ -18,6 +18,7 @@ describe Puppet::Type.type(:jenkins_num_executors).provider(:cli) do
         let(:provider) { described_class.instances[0] }
 
         it { expect(provider.name).to eq 42 }
+        it { expect(provider.ensure).to eq :present }
       end
     end
 
