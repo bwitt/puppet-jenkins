@@ -101,6 +101,11 @@ shared_examples 'array_matching property' do |_param|
     resource = described_class.new(name: 'test', arguments: value)
     expect(resource[:arguments]).to eq value
   end
+
+  it 'is insync with undef arguments' do
+    resource = described_class.new(name: 'test', arguments: [false, nil])
+    expect(resource.property(:arguments)).to be_insync([false, :undef])
+  end
 end
 
 shared_examples 'autorequires cli resources' do

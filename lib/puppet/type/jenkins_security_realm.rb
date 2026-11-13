@@ -14,6 +14,11 @@ Puppet::X::Jenkins::Type::Cli.newtype(:jenkins_security_realm) do
 
   newproperty(:arguments, array_matching: :all) do
     desc 'List of arguments to security realm class constructor'
+
+    # puppet passes a nested undef as nil but the provider reports :undef
+    munge do |value|
+      value.nil? ? :undef : value
+    end
   end
 
   # require all instances of jenkins_user, as does
