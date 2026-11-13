@@ -28,6 +28,10 @@ describe 'jenkins::job::present' do
         it { is_expected.to contain_exec('jenkins create-job myjob') }
         it { is_expected.to contain_exec('jenkins update-job myjob') }
         it { is_expected.not_to contain_exec('jenkins delete-job myjob') }
+
+        it 'compares the job config without the XML declaration' do
+          is_expected.to contain_exec('jenkins update-job myjob').with_provider('shell').with_unless(%r{sed -e '1s/\^<\?xml\[\^>\]\*\?>//'.* /var/lib/jenkins/jobs/myjob/config.xml > \$c})
+        end
       end
     end
   end

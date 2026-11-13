@@ -32,7 +32,7 @@ describe 'jenkins::job' do
   end
 
   context 'create' do
-    it 'works with no errors' do
+    it 'works with no errors and idempotently' do
       pp = <<-EOS
       include jenkins
 
@@ -45,8 +45,7 @@ describe 'jenkins::job' do
 
       # Run it twice and test for idempotency
       apply(pp, catch_failures: true)
-      # XXX idempotency is broken with at least jenkins 1.613
-      # apply(pp, :catch_changes => true)
+      apply(pp, catch_changes: true)
     end
 
     describe file('/var/lib/jenkins/jobs/test-build-job/config.xml') do
@@ -91,7 +90,7 @@ describe 'jenkins::job' do
   end
 
   context 'delete' do
-    it 'works with no errors' do
+    it 'works with no errors and idempotently' do
       # create a test job so it can be deleted; job creation is not what
       # we're intending to be testing here
       pp = <<-EOS
@@ -114,8 +113,7 @@ describe 'jenkins::job' do
 
       # Run it twice and test for idempotency
       apply(pp, catch_failures: true)
-      # XXX idempotency is broken with at least jenkins 1.613
-      # apply(pp, :catch_changes => true)
+      apply(pp, catch_changes: true)
     end
 
     describe file('/var/lib/jenkins/jobs/test-build-job/config.xml') do

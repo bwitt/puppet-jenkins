@@ -84,11 +84,16 @@ define jenkins::job::present (
   if $replace {
     # Use Jenkins CLI to update the job if it already exists
     $update_job = "${jenkins_cli} update-job ${jobname}"
+    # jenkins rewrites the XML declaration when it stores the job, so leave it
+    # and blank lines out of the comparison
+    $normalize = "sed -e '1s/^<?xml[^>]*?>//' -e '/^[[:space:]]*\$/d'"
+    $compare = "${normalize} ${config_path} > \$c && ${normalize} ${tmp_config_path} > \$d && ${difftool} \$c \$d"
     exec { "jenkins update-job ${jobname}":
-      command => "${cat_config} | ${update_job}",
-      onlyif  => "test -e ${config_path}",
-      unless  => "${difftool} ${config_path} ${tmp_config_path}",
-      notify  => Exec['reload-jenkins'],
+      provider => 'shell',
+      command  => "${cat_config} | ${update_job}",
+      onlyif   => "test -e ${config_path}",
+      unless   => "c=\$(mktemp) && d=\$(mktemp) && ${compare}; r=\$?; rm -f \$c \$d; exit \$r",
+      notify   => Exec['reload-jenkins'],
     }
   }
 }
